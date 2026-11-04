@@ -58,16 +58,22 @@ h2{font-size:clamp(28px,4.5vw,46px);margin-bottom:8px}
 .stat::before{top:-1px;left:-1px;border-right:0;border-bottom:0}.stat::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
 .stat b{font-size:34px;color:var(--c1);display:block}.stat span{font-size:12px;color:var(--mut)}
 .rv{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.8,.2,1)}.rv.on{opacity:1;transform:none}
-.tl{position:relative;margin-left:18px;padding-left:32px;border-left:2px solid var(--line)}
-.tl .fill{position:absolute;left:-2px;top:0;width:2px;height:0;background:linear-gradient(var(--c1),var(--c3));box-shadow:0 0 12px var(--c1)}
+.tl{--rail:7px;position:relative;margin-left:12px;padding-left:40px}
+.tl .rail,.tl .fill{position:absolute;left:var(--rail);top:0;width:2px;height:0;transform:translateX(-50%);pointer-events:none}
+.tl .rail{background:var(--line)}
+.tl .fill{background:linear-gradient(var(--c1),var(--c3));box-shadow:0 0 12px var(--c1);z-index:1}
 .job{position:relative;display:flex;flex-direction:column;align-items:flex-start;padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--card);margin-bottom:22px;backdrop-filter:blur(8px)}
-.job::before{content:"";position:absolute;left:-40px;top:30px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--c1);box-shadow:0 0 10px rgba(0,240,255,.35);z-index:1}
+.job:last-child{margin-bottom:0}
+.tl .job.rv{transform:none}
+.job .node{position:absolute;display:block;left:calc(var(--rail) - 40px - 1px);top:30px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--c1);box-shadow:0 0 10px rgba(0,240,255,.35);transform:translateX(-50%);z-index:2;pointer-events:none;transition:background .25s,box-shadow .25s}
+.job .node::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid var(--c1);opacity:0;pointer-events:none}
+.job.lit .node{background:var(--c1);box-shadow:0 0 14px var(--c1)}
+.job.pulse .node{box-shadow:0 0 18px var(--c1)}
+.job.pulse .node::after{opacity:.9;animation:ping 1.8s ease-out infinite}
 .job h3{font-size:19px;clear:both}.job em{color:var(--c1);font-style:normal}.job .when{display:block;float:none;clear:both;margin:0 0 8px;font-size:12px;color:var(--c3)}.job p{color:var(--mut);margin-top:8px;font-size:15px}
 .job.now{border-color:rgba(0,240,255,.55);box-shadow:0 0 28px rgba(0,240,255,.12)}
-.job.now::before{background:var(--c1);box-shadow:0 0 16px var(--c1)}
-.job.now::after{content:"";position:absolute;left:-44px;top:26px;width:22px;height:22px;border-radius:50%;border:1px solid var(--c1);animation:ping 1.8s ease-out infinite;pointer-events:none}
 .job .now{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:99px;font:10px 'JetBrains Mono',monospace;letter-spacing:.14em;color:#021018;background:var(--c1);vertical-align:middle}
-@keyframes ping{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+@keyframes ping{0%{transform:scale(.65);opacity:.85}100%{transform:scale(1.65);opacity:0}}
 .skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
 .sk{padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
 .sk h3{font-size:16px;margin-bottom:14px;color:var(--c1)}
@@ -169,12 +175,12 @@ body.gate-on .name .l{animation-play-state:paused}
 </section>
 
 <section id="exp"><span class="tag mono">// 01 CAREER LOG</span><h2 class="rv">Experience</h2><p class="sub rv">Five roles, from Java backends to leading XR and AI delivery.</p>
-<div class="tl" id="tl"><div class="fill" id="fill"></div>
-<div class="job rv now"><span class="when mono">Jun 2024 - Now</span><h3>Software Engineer (XR &amp; AI) · <em>RRD Go Creative</em> <span class="now">NOW</span></h3><p>Solution Architect and Team Lead. Industrial training VR, multiplayer VR shopping, trading-card AR, Porsche AI salesman, voice agents and full-duplex conversations on open-source models. Code-gen workflows with Cursor and Claude Code.</p></div>
-<div class="job rv"><span class="when mono">Dec 2023 - May 2024</span><h3>Unity 3D Developer (XR &amp; AI) · <em>Byfar Studios</em></h3><p>Crafted immersive experiences and AI programming in dynamic game development.</p></div>
-<div class="job rv"><span class="when mono">Feb - Nov 2023</span><h3>Junior Unity 3D Developer · <em>XR Labs</em></h3><p>Interactive experiences and enterprise VR applications.</p></div>
-<div class="job rv"><span class="when mono">May 2021 - Jan 2023</span><h3>Software Developer (ML &amp; NLP) · <em>BUDDI AI</em></h3><p>Spring MVC, Java and JavaScript, then healthcare problems with ML and NLP on a Java backend.</p></div>
-<div class="job rv"><span class="when mono">Dec 2020 - Jul 2021</span><h3>Software Developer · <em>Voussoir Technologies</em></h3><p>Foundations in algorithms, languages and application development.</p></div>
+<div class="tl" id="tl"><div class="rail" id="rail"></div><div class="fill" id="fill"></div>
+<div class="job rv now"><i class="node" aria-hidden="true"></i><span class="when mono">Jun 2024 - Now</span><h3>Software Engineer (XR &amp; AI) · <em>RRD Go Creative</em> <span class="now">NOW</span></h3><p>Solution Architect and Team Lead. Industrial training VR, multiplayer VR shopping, trading-card AR, Porsche AI salesman, voice agents and full-duplex conversations on open-source models. Code-gen workflows with Cursor and Claude Code.</p></div>
+<div class="job rv"><i class="node" aria-hidden="true"></i><span class="when mono">Dec 2023 - May 2024</span><h3>Unity 3D Developer (XR &amp; AI) · <em>Byfar Studios</em></h3><p>Crafted immersive experiences and AI programming in dynamic game development.</p></div>
+<div class="job rv"><i class="node" aria-hidden="true"></i><span class="when mono">Feb - Nov 2023</span><h3>Junior Unity 3D Developer · <em>XR Labs</em></h3><p>Interactive experiences and enterprise VR applications.</p></div>
+<div class="job rv"><i class="node" aria-hidden="true"></i><span class="when mono">May 2021 - Jan 2023</span><h3>Software Developer (ML &amp; NLP) · <em>BUDDI AI</em></h3><p>Spring MVC, Java and JavaScript, then healthcare problems with ML and NLP on a Java backend.</p></div>
+<div class="job rv"><i class="node" aria-hidden="true"></i><span class="when mono">Dec 2020 - Jul 2021</span><h3>Software Developer · <em>Voussoir Technologies</em></h3><p>Foundations in algorithms, languages and application development.</p></div>
 </div></section>
 
 <section id="skills"><span class="tag mono">// 02 TECH STACK</span><h2 class="rv">Core Competencies</h2><p class="sub rv">Hover the chips. The stack is grouped the way I actually ship work.</p>
@@ -238,7 +244,7 @@ let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;addEventListener('mousemove',e=
 (function cur(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;$('#cr').style.transform=`translate(${rx}px,${ry}px)`;requestAnimationFrame(cur)})();
 document.addEventListener('mouseover',e=>$('#cr').classList.toggle('h',!!e.target.closest('a,button,.card,.chip,.kbd')));
 // scroll progress + timeline
-let sp=0;function onScroll(){const m=document.documentElement.scrollHeight-innerHeight;sp=m>0?scrollY/m:0;$('#prog').style.width=sp*100+'%';const t=$('#tl').getBoundingClientRect(),jobs=$$('#tl .job');let h=0;if(jobs[0]){const d=jobs[0].getBoundingClientRect();h=d.top-t.top+37}jobs.forEach(j=>{const r=j.getBoundingClientRect();if(r.top<innerHeight*.55)h=r.top-t.top+37});$('#fill').style.height=Math.max(0,Math.min(t.height,h))+'px'}addEventListener('scroll',onScroll,{passive:true});onScroll();
+let sp=0;function onScroll(){const m=document.documentElement.scrollHeight-innerHeight;sp=m>0?scrollY/m:0;$('#prog').style.width=sp*100+'%';const tl=$('#tl'),rail=$('#rail'),fill=$('#fill');if(!tl||!fill)return;const jobs=$$('#tl .job');if(!jobs.length)return;const t=tl.getBoundingClientRect(),mark=innerHeight*.55;const nodes=jobs.map(j=>{const n=j.querySelector('.node'),r=(n||j).getBoundingClientRect();return{j,n,r,c:r.top+r.height/2}});const first=nodes[0].c-t.top,last=nodes[nodes.length-1].c-t.top;if(rail){rail.style.top=first+'px';rail.style.height=Math.max(0,last-first)+'px'}let active=-1;nodes.forEach((o,i)=>{if(o.c<=mark+1)active=i});nodes.forEach((o,i)=>{o.j.classList.toggle('lit',i<=active);o.j.classList.toggle('pulse',i===active)});const end=active>=0?nodes[active].c-t.top:first;fill.style.top=first+'px';fill.style.height=Math.max(0,Math.min(last,end)-first)+'px'}addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);addEventListener('load',onScroll);onScroll();requestAnimationFrame(onScroll);
 // palette
 const cmds=[['Go to Experience','#exp'],['Go to Skills','#skills'],['Go to Projects','#work'],['Filter: AI projects',()=>{sc('#work');$('.f[data-c=ai]').click()}],['Filter: XR projects',()=>{sc('#work');$('.f[data-c=xr]').click()}],['Contact: Email Anbu','mailto:anburaja920@gmail.com'],['Open GitHub','https://github.com/Anbusport07'],['Open LinkedIn','https://www.linkedin.com/in/anbu-raja-377946146/'],['Back to top','#top']];let sel=0,list=cmds;
 function rp(){$('#pl').innerHTML=list.map((c,i)=>`<li class="${i==sel?'s':''}" data-i="${i}">&gt; ${c[0]}</li>`).join('')}
