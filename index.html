@@ -6,6 +6,13 @@
 <title>Anbu Raja B | XR & AI Engineer</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/misc/GPUComputationRenderer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 <style>
 :root{--bg:#05060f;--fg:#e6ecff;--mut:#8b95b8;--c1:#00f0ff;--c2:#b14cff;--c3:#ff2e93;--card:rgba(14,18,40,.6);--line:rgba(120,140,255,.18);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#05060f}}
@@ -105,10 +112,34 @@ footer{text-align:center;padding:30px;color:var(--mut);font-size:13px;border-top
 #hud b{color:var(--c1);font-size:16px}
 #hud .sh{height:4px;background:var(--line);border-radius:4px;overflow:hidden}#hud .sh i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--c3),var(--c1));transition:width .3s}
 #hud small{color:var(--mut)}#hud button{background:none;border:1px solid var(--line);color:var(--c1);border-radius:8px;padding:4px;font:inherit;cursor:pointer}
+#gate{position:fixed;inset:0;z-index:80;background:#05060f;transition:opacity .9s ease,visibility .9s}
+#gate.out{opacity:0;visibility:hidden;pointer-events:none}
+#gc{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#gate::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.7))}
+#gate .gt{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 26px);text-align:center;z-index:2;font-size:11px;letter-spacing:.35em;color:var(--mut);text-transform:uppercase;pointer-events:none}
+#gate .gt b{color:var(--c1);font-weight:500}
+#gate h1{position:absolute;inset:0;display:none;align-items:center;justify-content:center;margin:0;font-size:clamp(56px,13vw,180px);letter-spacing:-.03em;color:#fff;pointer-events:none}
+#gate.static h1{display:flex}
+#gate .ga{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 7vh);z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px;pointer-events:none}
+#gate .ga small{font-size:11px;letter-spacing:.25em;color:var(--mut);text-transform:uppercase}
+#genter{pointer-events:auto;font:600 15px 'Space Grotesk',system-ui,sans-serif;padding:15px 30px;border-radius:999px;border:0;color:#021018;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 0 0 1px rgba(0,240,255,.35),0 10px 40px rgba(0,240,255,.25);transition:transform .25s,box-shadow .25s;display:inline-flex;align-items:center;gap:10px}
+#genter:hover{transform:translateY(-3px);box-shadow:0 0 0 1px rgba(0,240,255,.6),0 0 40px rgba(0,240,255,.5)}
+#genter:focus-visible{outline:2px solid #fff;outline-offset:4px}
+#genter span{transition:transform .25s}#genter:hover span{transform:translateX(4px)}
+#gate .ga,#gate .gt{opacity:0;transform:translateY(12px);transition:opacity .8s ease .2s,transform .8s ease .2s}
+#gate.ready .ga,#gate.ready .gt{opacity:1;transform:none}
+body.gate-on{overflow:hidden}
+body.gate-on nav,body.gate-on #dots,body.gate-on #hud,body.gate-on #prog{opacity:0;pointer-events:none}
+nav,#dots,#hud{transition:opacity .8s ease}
+body.gate-on .name .l{animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
-<body>
+<body class="gate-on">
+<script>if(location.hash&&location.hash!='#top')document.body.classList.remove('gate-on')</script>
+<div id="gate" role="dialog" aria-label="Anbu Raja, portfolio intro"><canvas id="gc" aria-hidden="true"></canvas><h1>Anbu Raja</h1>
+<div class="gt mono">// <b>XR</b> · <b>AI</b> · Solution Architect</div>
+<div class="ga"><button id="genter" type="button">Enter the portfolio walkthrough <span aria-hidden="true">&rarr;</span></button><small class="mono">Move through the name</small></div></div>
 <div id="pre"><b class="mono">BOOTING XR/AI CORE</b><div class="bar"><i id="pb"></i></div></div>
 <div id="prog"></div><canvas id="gl"></canvas><div class="neb"></div><div class="scan"></div><div class="vig"></div><div id="cd"></div><div id="cr"></div>
 
@@ -162,7 +193,7 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 // name letters
 $('#nm').innerHTML='Anbu Raja B'.split(' ').map((w,wi)=>'<span class="w">'+[...w].map((c,i)=>`<span class="l" style="--i:${i+wi*4}">${c}</span>`).join('')+'</span>').join('');
 // preloader
-let p=0;const pt=setInterval(()=>{p+=Math.random()*28;$('#pb').style.width=Math.min(p,100)+'%';if(p>=100){clearInterval(pt);setTimeout(()=>$('#pre').classList.add('off'),250);counters()}},180);
+let p=0;const pt=setInterval(()=>{p+=Math.random()*28;$('#pb').style.width=Math.min(p,100)+'%';if(p>=100){clearInterval(pt);setTimeout(()=>{$('#pre').classList.add('off');window.__booted=1;document.dispatchEvent(new Event('boot-done'))},250);if(document.body.classList.contains('gate-on'))document.addEventListener('gate-enter',counters,{once:true});else counters()}},180);
 // role rotator
 const roles=['XR / VR / AR Developer','AI Solutions Architect','Unity 3D Engineer','Voice Agent Builder','Code-Gen Optimizer'];let ri=0,ci=0,del=0;
 (function ty(){const r=roles[ri];ci+=del?-1:1;$('#rt').textContent=r.slice(0,ci);let t=del?35:80;if(!del&&ci==r.length){t=1800;del=1}else if(del&&ci==0){del=0;ri=(ri+1)%roles.length;t=400}setTimeout(ty,t)})();
@@ -207,7 +238,7 @@ let sp=0;function onScroll(){const m=document.documentElement.scrollHeight-inner
 const cmds=[['Go to Experience','#exp'],['Go to Skills','#skills'],['Go to Projects','#work'],['Filter: AI projects',()=>{sc('#work');$('.f[data-c=ai]').click()}],['Filter: XR projects',()=>{sc('#work');$('.f[data-c=xr]').click()}],['Contact: Email Anbu','mailto:anburaja920@gmail.com'],['Open GitHub','https://github.com/anbu06'],['Open LinkedIn','https://www.linkedin.com/in/anbu-raja-377946146/'],['Back to top','#top']];let sel=0,list=cmds;
 function rp(){$('#pl').innerHTML=list.map((c,i)=>`<li class="${i==sel?'s':''}" data-i="${i}">&gt; ${c[0]}</li>`).join('')}
 function go(c){$('#pal').classList.remove('on');if(typeof c[1]=='function')c[1]();else if(c[1][0]=='#')sc(c[1]);else window.open(c[1],c[1].startsWith('mailto')?'_self':'_blank')}
-function tp(){const o=$('#pal').classList.toggle('on');if(o){$('#pi').value='';list=cmds;sel=0;rp();$('#pi').focus()}}
+function tp(){if(document.body.classList.contains('gate-on'))return;const o=$('#pal').classList.toggle('on');if(o){$('#pi').value='';list=cmds;sel=0;rp();$('#pi').focus()}}
 $('#kb').onclick=tp;$('#pal').onclick=e=>{if(e.target.id=='pal')tp()};$('#pl').onclick=e=>{const l=e.target.closest('li');if(l)go(list[+l.dataset.i])};
 $('#pi').oninput=e=>{const q=e.target.value.toLowerCase();list=cmds.filter(c=>c[0].toLowerCase().includes(q));sel=0;rp()};
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=='k'){e.preventDefault();tp()}else if($('#pal').classList.contains('on')){if(e.key=='Escape')tp();if(e.key=='ArrowDown'){sel=Math.min(sel+1,list.length-1);rp()}if(e.key=='ArrowUp'){sel=Math.max(sel-1,0);rp()}if(e.key=='Enter'&&list[sel])go(list[sel])}});
@@ -313,13 +344,217 @@ for(let i=FX.length-1;i>=0;i--){const e=FX[i];e.life-=dt*1.1;for(let j=0;j<e.vs.
 if(e.life<=0){S.remove(e.pts);S.remove(e.rg);e.g.dispose();e.m.dispose();e.rg.geometry.dispose();e.rg.material.dispose();FX.splice(i,1)}}};
 /* input */
 addEventListener('pointermove',e=>{ax=e.clientX/innerWidth*2-1;ay=-(e.clientY/innerHeight*2-1);lastIn=performance.now()},{passive:true});
-const ok=t=>!t.closest('a,button,input,.card,#pal,nav,.chip,#hud,#dots');
+const ok=t=>!t.closest('a,button,input,.card,#pal,nav,.chip,#hud,#dots,#gate');
 addEventListener('pointerdown',e=>{lastIn=performance.now();ax=e.clientX/innerWidth*2-1;ay=-(e.clientY/innerHeight*2-1);if(on&&ok(e.target)){hold=1;pcd=0}});
 ['pointerup','pointercancel'].forEach(ev=>addEventListener(ev,()=>hold=0));
 addEventListener('keydown',e=>{if(e.code=='KeyF'&&on&&!/INPUT|BUTTON/.test(document.activeElement.tagName)&&!q('#pal').classList.contains('on')){lastIn=performance.now();pfire()}});
 const bo=q('#bto');bo.textContent='BATTLE '+(on?'ON':'OFF');
 bo.onclick=()=>{on=!on;bo.textContent='BATTLE '+(on?'ON':'OFF');if(!on){Ls.forEach(l=>S.remove(l.m));Ls.length=0}else sa.forEach(s=>spawn(s,1))};
 hud();
+})();
+</script>
+<script>
+/* ---------- particle name gate ---------- */
+(function(){
+const gate=document.getElementById('gate'),btn=document.getElementById('genter'),body=document.body;
+if(!gate)return;
+if(!body.classList.contains('gate-on')){gate.remove();return}
+const onBoot=f=>window.__booted?f():document.addEventListener('boot-done',f,{once:true});
+let entered=false,fx=null;
+function enter(){if(entered)return;entered=true;
+if(fx)fx.burst();
+gate.classList.add('out');body.classList.remove('gate-on');scrollTo(0,0);
+document.dispatchEvent(new Event('gate-enter'));
+setTimeout(()=>{if(fx)fx.dispose();gate.remove()},1000)}
+btn.addEventListener('click',enter);
+const showUI=()=>gate.classList.add('ready');
+const fallback=()=>{gate.classList.add('static');onBoot(showUI)};
+if(typeof THREE=='undefined'){fallback();return}
+const calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+const mobile=matchMedia('(pointer:coarse)').matches||innerWidth<720;
+const layout=()=>innerWidth/innerHeight<.8?['Anbu','Raja']:['Anbu Raja'];
+
+/* sample the name into an extruded point volume: rim + front/back faces + core + dust */
+function buildHomes(n,lines){
+const fs=220,lh=fs*.95,c=document.createElement('canvas'),x=c.getContext('2d'),font='700 '+fs+'px "Space Grotesk", system-ui, sans-serif';
+x.font=font;if('letterSpacing' in x)x.letterSpacing='-6px';
+const tw=Math.max(...lines.map(l=>x.measureText(l).width));
+c.width=Math.ceil(tw+80);c.height=Math.ceil(lh*lines.length+80);
+x.font=font;if('letterSpacing' in x)x.letterSpacing='-6px';x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';
+lines.forEach((l,i)=>x.fillText(l,c.width/2,40+lh*(i+.5)));
+const W=c.width,H=c.height,d=x.getImageData(0,0,W,H).data,a=(i,j)=>i<0||j<0||i>=W||j>=H?0:d[(j*W+i)*4+3];
+const fill=[],rim=[];let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
+for(let j=0;j<H;j++)for(let i=0;i<W;i++){if(a(i,j)<128)continue;
+if(i<x0)x0=i;if(i>x1)x1=i;if(j<y0)y0=j;if(j>y1)y1=j;
+(a(i-2,j)<128||a(i+2,j)<128||a(i,j-2)<128||a(i,j+2)<128?rim:fill).push(i,j)}
+const k=10/(x1-x0),cx=(x0+x1)/2,cy=(y0+y1)/2,depth=fs*.7*.2*k,out=new Float32Array(n*4);
+const pick=arr=>{const q=(Math.random()*arr.length/2|0)*2;return[(arr[q]+Math.random()-cx)*k,-(arr[q+1]+Math.random()-cy)*k]};
+for(let i=0;i<n;i++){const r=Math.random();let X,Y,Z;
+if(r<.04){X=(Math.random()-.5)*15;Y=(Math.random()-.5)*(y1-y0)*k*3;Z=(Math.random()-.5)*5}
+else if(r<.54){[X,Y]=pick(rim);Z=(Math.random()-.5)*depth}
+else if(r<.86){[X,Y]=pick(fill);Z=(Math.random()<.5?-.5:.5)*depth+(Math.random()-.5)*depth*.1}
+else{[X,Y]=pick(fill);Z=(Math.random()-.5)*depth}
+out[i*4]=X;out[i*4+1]=Y;out[i*4+2]=Z;out[i*4+3]=Math.random()}
+return{homes:out,w:10,h:(y1-y0)*k}}
+
+const velFS=`
+uniform float uDt,uTime,uSpring,uDamp,uRad,uPush,uCurl,uLift,uDrag,uSpeed,uActive,uBurst;
+uniform vec3 uMouse,uMouseVel;
+uniform sampler2D tHome;
+void main(){
+vec2 uv=gl_FragCoord.xy/resolution.xy;
+vec3 p=texture2D(texturePosition,uv).xyz,v=texture2D(textureVelocity,uv).xyz;
+vec4 h=texture2D(tHome,uv);
+vec3 f=(h.xyz-p)*uSpring;
+vec3 d=p-uMouse;float r=length(d.xy);
+float fall=1.-smoothstep(0.,uRad*(.5+fract(h.w*7.31)),r);fall*=fall*uActive;
+vec2 dir=d.xy/max(r,1e-4);float sp=.35+uSpeed*1.4;
+f.xy+=dir*fall*uPush*sp;
+f.xy+=vec2(-dir.y,dir.x)*fall*uCurl*uSpeed*(h.w<.5?-1.:1.);
+f.xy+=uMouseVel.xy*fall*uDrag;
+f.z+=fall*uLift*sp*(h.w<.3?-.5:1.);
+float t=uTime*.35;
+f+=vec3(sin(p.y*1.7+t+h.w*6.283),cos(p.x*1.3-t+h.w*4.),sin((p.x+p.y)*.9+t*1.3))*(.08+fall*1.2);
+if(uBurst>0.)f+=normalize(p-vec3(0.,0.,-3.)+vec3(h.w-.5))*uBurst*(.6+h.w);
+v+=f*uDt;v*=pow(uDamp,uDt*60.);
+gl_FragColor=vec4(v,1.);}`;
+const posFS=`
+uniform float uDt;
+void main(){vec2 uv=gl_FragCoord.xy/resolution.xy;vec4 p=texture2D(texturePosition,uv);gl_FragColor=vec4(p.xyz+texture2D(textureVelocity,uv).xyz*uDt,p.w);}`;
+const ptVS=`
+attribute float rnd;
+#ifdef GPU
+attribute vec2 ref;uniform sampler2D tPos,tVel;
+#else
+attribute float spd;
+#endif
+uniform float uSize,uOpacity;
+varying float vA,vT;
+void main(){
+#ifdef GPU
+vec3 p=texture2D(tPos,ref).xyz;float s=length(texture2D(tVel,ref).xyz);
+#else
+vec3 p=position;float s=spd;
+#endif
+vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;
+float k=clamp(s*.12,0.,1.);
+gl_PointSize=min(uSize*(.55+rnd*.9)*(1.+k*.5)*(14./max(-mv.z,1.)),uSize*3.);
+vA=(.1+rnd*.45)*(.8+k*1.2)*uOpacity;vT=rnd;}`;
+const ptFS=`
+varying float vA,vT;
+void main(){float d=length(gl_PointCoord-.5);if(d>.5)discard;
+vec3 c=vT>.985?vec3(.55,1.,1.):vT<.012?vec3(1.,.6,.85):vec3(1.);
+gl_FragColor=vec4(c,smoothstep(.5,0.,d)*vA);}`;
+
+async function init(){
+try{await Promise.race([document.fonts.load('700 220px "Space Grotesk"'),new Promise(r=>setTimeout(r,2500))])}catch(e){}
+const cv=document.getElementById('gc');let R;
+try{R=new THREE.WebGLRenderer({canvas:cv,antialias:false,powerPreference:'high-performance'})}catch(e){fallback();return}
+const PR=Math.min(devicePixelRatio||1,1.5);R.setPixelRatio(PR);R.setSize(innerWidth,innerHeight);R.setClearColor(0x05060f,1);
+const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(35,innerWidth/innerHeight,.1,100);C.position.z=14;
+const G=new THREE.Group();S.add(G);
+let lines=layout(),txt={w:10,h:2};
+
+const P={spring:7,damp:.93,rad:1.05,push:26,curl:22,lift:24,drag:1.1};
+const U={uDt:{value:0},uTime:{value:0},uSpring:{value:0},uDamp:{value:P.damp},uRad:{value:P.rad},uPush:{value:P.push},uCurl:{value:P.curl},uLift:{value:P.lift},uDrag:{value:P.drag},uSpeed:{value:0},uActive:{value:0},uBurst:{value:0},uMouse:{value:new THREE.Vector3(0,0,99)},uMouseVel:{value:new THREE.Vector3()}};
+const mat=new THREE.ShaderMaterial({vertexShader:ptVS,fragmentShader:ptFS,uniforms:{uSize:{value:(mobile?2.6:1.7)*PR},uOpacity:{value:1},tPos:{value:null},tVel:{value:null}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
+const geo=new THREE.BufferGeometry();
+let sim=null;
+
+/* GPU path: ping-pong position and velocity textures */
+(function(){if(!THREE.GPUComputationRenderer)return;
+const SIZE=mobile?128:256,N=SIZE*SIZE,gpu=new THREE.GPUComputationRenderer(SIZE,SIZE,R);
+if(/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform=='MacIntel'&&navigator.maxTouchPoints>1))gpu.setDataType(THREE.HalfFloatType);
+const b=buildHomes(N,lines);txt=b;
+const tP=gpu.createTexture(),tV=gpu.createTexture(),pd=tP.image.data;
+for(let i=0;i<N;i++){const u=Math.random()*6.283,r=5+Math.random()*9;pd[i*4]=r*Math.cos(u);pd[i*4+1]=r*Math.sin(u)*.6;pd[i*4+2]=-2-Math.random()*12;pd[i*4+3]=b.homes[i*4+3]}
+const home=new THREE.DataTexture(b.homes,SIZE,SIZE,THREE.RGBAFormat,THREE.FloatType);home.needsUpdate=true;
+const vP=gpu.addVariable('texturePosition',posFS,tP),vV=gpu.addVariable('textureVelocity',velFS,tV);
+gpu.setVariableDependencies(vP,[vP,vV]);gpu.setVariableDependencies(vV,[vP,vV]);
+Object.assign(vV.material.uniforms,U,{tHome:{value:home}});vP.material.uniforms.uDt=U.uDt;
+if(gpu.init()!==null){home.dispose();return}
+const ref=new Float32Array(N*2),rnd=new Float32Array(N);
+for(let i=0;i<N;i++){ref[i*2]=(i%SIZE+.5)/SIZE;ref[i*2+1]=((i/SIZE|0)+.5)/SIZE;rnd[i]=b.homes[i*4+3]}
+geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(N*3),3));geo.setAttribute('ref',new THREE.BufferAttribute(ref,2));geo.setAttribute('rnd',new THREE.BufferAttribute(rnd,1));
+mat.defines={GPU:''};
+sim={step(){gpu.compute();mat.uniforms.tPos.value=gpu.getCurrentRenderTarget(vP).texture;mat.uniforms.tVel.value=gpu.getCurrentRenderTarget(vV).texture},
+rehome(l){const nb=buildHomes(N,l);home.image.data.set(nb.homes);home.needsUpdate=true;return nb},
+dispose(){[vP,vV].forEach(v=>{v.renderTargets.forEach(t=>t.dispose());v.material.dispose()});home.dispose();tP.dispose();tV.dispose()}}})();
+
+/* CPU fallback: same forces, fewer points */
+if(!sim){const N=mobile?12000:20000,b=buildHomes(N,lines);txt=b;
+const hm=b.homes,pos=new Float32Array(N*3),vel=new Float32Array(N*3),spd=new Float32Array(N),rnd=new Float32Array(N);
+for(let i=0;i<N;i++){const u=Math.random()*6.283,r=5+Math.random()*9;pos[i*3]=r*Math.cos(u);pos[i*3+1]=r*Math.sin(u)*.6;pos[i*3+2]=-2-Math.random()*12;rnd[i]=hm[i*4+3]}
+geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('spd',new THREE.BufferAttribute(spd,1));geo.setAttribute('rnd',new THREE.BufferAttribute(rnd,1));
+sim={step(){const dt=U.uDt.value,K=U.uSpring.value,dm=Math.pow(P.damp,dt*60),m=U.uMouse.value,mv=U.uMouseVel.value,ac=U.uActive.value,sv=U.uSpeed.value,bu=U.uBurst.value,sp=.35+sv*1.4,t=U.uTime.value*.35;
+for(let i=0;i<N;i++){const i3=i*3,i4=i*4,w=hm[i4+3];let px=pos[i3],py=pos[i3+1],pz=pos[i3+2];
+let fx=(hm[i4]-px)*K,fy=(hm[i4+1]-py)*K,fz=(hm[i4+2]-pz)*K;
+const dx=px-m.x,dy=py-m.y,r=Math.hypot(dx,dy),R0=P.rad*(.5+(w*7.31)%1);
+let fa=0;if(r<R0){const q=r/R0;fa=1-q*q*(3-2*q);fa*=fa*ac}
+if(fa>0){const ux=dx/Math.max(r,1e-4),uy=dy/Math.max(r,1e-4),cs=w<.5?-1:1;
+fx+=ux*fa*P.push*sp-uy*fa*P.curl*sv*cs+mv.x*fa*P.drag;fy+=uy*fa*P.push*sp+ux*fa*P.curl*sv*cs+mv.y*fa*P.drag;fz+=fa*P.lift*sp*(w<.3?-.5:1)}
+const n=.08+fa*1.2;fx+=Math.sin(py*1.7+t+w*6.283)*n;fy+=Math.cos(px*1.3-t+w*4)*n;fz+=Math.sin((px+py)*.9+t*1.3)*n;
+if(bu>0){const ox=px+w-.5,oy=py+w-.5,oz=pz+3+w-.5,l=Math.hypot(ox,oy,oz)||1,s=bu*(.6+w)/l;fx+=ox*s;fy+=oy*s;fz+=oz*s}
+let vx=(vel[i3]+fx*dt)*dm,vy=(vel[i3+1]+fy*dt)*dm,vz=(vel[i3+2]+fz*dt)*dm;
+vel[i3]=vx;vel[i3+1]=vy;vel[i3+2]=vz;pos[i3]=px+vx*dt;pos[i3+1]=py+vy*dt;pos[i3+2]=pz+vz*dt;spd[i]=Math.hypot(vx,vy,vz)}
+geo.attributes.position.needsUpdate=true;geo.attributes.spd.needsUpdate=true},
+rehome(l){const nb=buildHomes(N,l);hm.set(nb.homes);return nb},dispose(){}}}
+
+const pts=new THREE.Points(geo,mat);pts.frustumCulled=false;G.add(pts);
+
+/* bloom */
+let comp=null,bloom=null;
+if(!mobile&&THREE.EffectComposer&&THREE.UnrealBloomPass){comp=new THREE.EffectComposer(R);comp.addPass(new THREE.RenderPass(S,C));
+bloom=new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth/2,innerHeight/2),.5,.5,.1);comp.addPass(bloom)}
+
+function fit(){const vh=2*Math.tan(C.fov*Math.PI/360)*C.position.z,vw=vh*C.aspect;
+G.scale.setScalar(Math.min(vw*.74/txt.w,vh*(lines.length>1?.5:.32)/txt.h))}
+fit();
+addEventListener('resize',()=>{if(!fx)return;C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix();R.setSize(innerWidth,innerHeight);
+if(comp){comp.setSize(innerWidth,innerHeight);bloom.resolution.set(innerWidth/2,innerHeight/2)}
+const nl=layout();if(nl.length!=lines.length){lines=nl;txt=sim.rehome(lines)}fit()});
+
+/* pointer */
+const ray=new THREE.Raycaster(),ndc=new THREE.Vector2(),plane=new THREE.Plane(),hit=new THREE.Vector3(),nrm=new THREE.Vector3();
+const mL=new THREE.Vector3(),mE=new THREE.Vector3(),mP=new THREE.Vector3(),mI=new THREE.Vector3();
+let nx=0,ny=0,has=false,seeded=false,speed=0,active=0,tiltX=0,tiltY=0;
+const mv=e=>{nx=e.clientX/innerWidth*2-1;ny=-(e.clientY/innerHeight)*2+1;has=true};
+gate.addEventListener('pointermove',mv,{passive:true});gate.addEventListener('pointerdown',mv,{passive:true});
+gate.addEventListener('pointerleave',()=>has=false);gate.addEventListener('pointerup',e=>{if(e.pointerType!='mouse')has=false});
+gate.addEventListener('pointercancel',()=>has=false);
+
+let bootAt=-1,burstT=0,fade=1,raf=0,last=performance.now(),t0=last;
+onBoot(()=>{bootAt=performance.now();setTimeout(showUI,700)});
+function frame(now){raf=requestAnimationFrame(frame);
+const dt=Math.min(.033,Math.max(.001,(now-last)/1e3));last=now;const t=(now-t0)/1e3;
+const asm=bootAt<0?0:Math.min(1,(now-bootAt)/1600),ease=asm*asm*(3-2*asm);
+U.uDt.value=dt;U.uTime.value=t;
+U.uSpring.value=entered?0:P.spring*(.04+.96*ease);
+/* tilt toward the pointer, kept small so the name stays readable */
+const tm=mobile?0:calm?.4:1,tx=-ny*.18*tm,ty=nx*.35*tm;
+tiltX+=(tx-tiltX)*Math.min(1,dt*2.5);tiltY+=(ty-tiltY)*Math.min(1,dt*2.5);
+G.rotation.x=tiltX+Math.sin(t*.4)*.025;G.rotation.y=tiltY+Math.sin(t*.27)*.05;G.updateMatrixWorld();
+ray.setFromCamera(ndc.set(nx,ny),C);nrm.set(0,0,1).applyQuaternion(G.quaternion);plane.setFromNormalAndCoplanarPoint(nrm,G.position);
+if(ray.ray.intersectPlane(plane,hit)){G.worldToLocal(mL.copy(hit));if(!seeded){mE.copy(mL);mP.copy(mL);seeded=true}}
+mE.lerp(mL,1-Math.pow(.0015,dt));
+mI.subVectors(mE,mP).divideScalar(dt);mP.copy(mE);
+U.uMouseVel.value.lerp(mI,.25).clampLength(0,25);
+speed+=(Math.min(1,U.uMouseVel.value.length()/9)-speed)*Math.min(1,dt*6);
+active+=((has&&!entered?1:0)*ease-active)*Math.min(1,dt*4);
+U.uMouse.value.copy(mE);U.uSpeed.value=speed;U.uActive.value=active;
+if(burstT>0){burstT-=dt;U.uBurst.value=burstT>0?45:0}
+if(entered){fade=Math.max(0,fade-dt*1.3);mat.uniforms.uOpacity.value=fade}
+sim.step();
+comp?comp.render():R.render(S,C)}
+raf=requestAnimationFrame(frame);
+
+fx={burst(){if(!calm)burstT=.18},
+dispose(){cancelAnimationFrame(raf);fx=null;sim.dispose();geo.dispose();mat.dispose();
+if(comp){bloom.dispose();comp.renderTarget1.dispose();comp.renderTarget2.dispose()}
+R.dispose();R.forceContextLoss()}};
+if(entered)fx.dispose()}
+init().catch(()=>fallback());
 })();
 </script>
 </body>
