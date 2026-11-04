@@ -52,20 +52,27 @@ h2{font-size:clamp(28px,4.5vw,46px);margin-bottom:8px}
 .btn{padding:13px 26px;border-radius:12px;text-decoration:none;color:var(--fg);border:1px solid var(--line);background:var(--card);font-weight:600;transition:.25s;display:inline-block}
 .btn.p{background:linear-gradient(135deg,var(--c1),var(--c2));color:#021018;border:0}
 .btn:hover{transform:translateY(-3px);box-shadow:0 0 28px rgba(0,240,255,.35)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-top:60px;max-width:760px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:60px;max-width:420px}
 .stat{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card);position:relative}
 .stat::before,.stat::after{content:"";position:absolute;width:10px;height:10px;border:1px solid var(--c1)}
 .stat::before{top:-1px;left:-1px;border-right:0;border-bottom:0}.stat::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
 .stat b{font-size:34px;color:var(--c1);display:block}.stat span{font-size:12px;color:var(--mut)}
 .rv{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.8,.2,1)}.rv.on{opacity:1;transform:none}
-.tl{position:relative;margin-left:14px;padding-left:34px;border-left:1px solid var(--line)}
-.tl .fill{position:absolute;left:-1px;top:0;width:2px;height:0;background:linear-gradient(var(--c1),var(--c3));box-shadow:0 0 12px var(--c1)}
-.job{position:relative;padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--card);margin-bottom:22px;backdrop-filter:blur(8px)}
-.job::before{content:"";position:absolute;left:-43px;top:28px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid var(--c1);box-shadow:0 0 14px var(--c1)}
-.job h3{font-size:19px}.job em{color:var(--c1);font-style:normal}.job .d{float:right;font-size:12px;color:var(--c3)}.job p{color:var(--mut);margin-top:8px;font-size:15px}
+.tl{position:relative;margin-left:18px;padding-left:32px;border-left:2px solid var(--line)}
+.tl .fill{position:absolute;left:-2px;top:0;width:2px;height:0;background:linear-gradient(var(--c1),var(--c3));box-shadow:0 0 12px var(--c1)}
+.job{position:relative;display:flex;flex-direction:column;align-items:flex-start;padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--card);margin-bottom:22px;backdrop-filter:blur(8px)}
+.job::before{content:"";position:absolute;left:-40px;top:30px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--c1);box-shadow:0 0 10px rgba(0,240,255,.35);z-index:1}
+.job h3{font-size:19px;clear:both}.job em{color:var(--c1);font-style:normal}.job .when{display:block;float:none;clear:both;margin:0 0 8px;font-size:12px;color:var(--c3)}.job p{color:var(--mut);margin-top:8px;font-size:15px}
+.job.now{border-color:rgba(0,240,255,.55);box-shadow:0 0 28px rgba(0,240,255,.12)}
+.job.now::before{background:var(--c1);box-shadow:0 0 16px var(--c1)}
+.job.now::after{content:"";position:absolute;left:-44px;top:26px;width:22px;height:22px;border-radius:50%;border:1px solid var(--c1);animation:ping 1.8s ease-out infinite;pointer-events:none}
+.job .now{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:99px;font:10px 'JetBrains Mono',monospace;letter-spacing:.14em;color:#021018;background:var(--c1);vertical-align:middle}
+@keyframes ping{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.7);opacity:0}}
 .skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
 .sk{padding:22px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
 .sk h3{font-size:16px;margin-bottom:14px;color:var(--c1)}
+.sk .g{margin-bottom:12px}.sk .g:last-child{margin-bottom:0}
+.sk .g b{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:0 0 8px;font-weight:600}
 .chip{display:inline-block;padding:5px 12px;margin:0 6px 8px 0;border:1px solid var(--line);border-radius:99px;font-size:13px;transition:.2s;cursor:default}
 .chip:hover{border-color:var(--c3);color:var(--c3);box-shadow:0 0 14px rgba(255,46,147,.4);transform:scale(1.07)}
 .filters{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap}
@@ -158,21 +165,19 @@ body.gate-on .name .l{animation-play-state:paused}
 <div class="stats">
 <div class="stat"><b class="cnt" data-n="6">0</b><span>Years in tech</span></div>
 <div class="stat"><b class="cnt" data-n="15">0</b><span>XR / AI projects</span></div>
-<div class="stat"><b class="cnt" data-n="5">0</b><span>Companies</span></div>
-<div class="stat"><b class="cnt" data-n="1">0</b><span>India's largest VR safety sim</span></div>
 </div>
 </section>
 
 <section id="exp"><span class="tag mono">// 01 CAREER LOG</span><h2 class="rv">Experience</h2><p class="sub rv">Five roles, from Java backends to leading XR and AI delivery.</p>
 <div class="tl" id="tl"><div class="fill" id="fill"></div>
-<div class="job rv"><span class="d mono">Jun 2024 - Now</span><h3>Software Engineer (XR &amp; AI) · <em>RRD Go Creative</em></h3><p>Solution Architect and Team Lead. Industrial training VR, multiplayer VR shopping, trading-card AR, Porsche AI salesman, voice agents and full-duplex conversations on open-source models. Code-gen workflows with Cursor and Claude Code.</p></div>
-<div class="job rv"><span class="d mono">Dec 2023 - May 2024</span><h3>Unity 3D Developer (XR &amp; AI) · <em>Byfar Studios</em></h3><p>Crafted immersive experiences and AI programming in dynamic game development.</p></div>
-<div class="job rv"><span class="d mono">Feb - Nov 2023</span><h3>Junior Unity 3D Developer · <em>XR Labs</em></h3><p>Interactive experiences and enterprise VR applications.</p></div>
-<div class="job rv"><span class="d mono">May 2021 - Jan 2023</span><h3>Software Developer (ML &amp; NLP) · <em>BUDDI AI</em></h3><p>Spring MVC, Java and JavaScript, then healthcare problems with ML and NLP on a Java backend.</p></div>
-<div class="job rv"><span class="d mono">Dec 2020 - Jul 2021</span><h3>Software Developer · <em>Voussoir Technologies</em></h3><p>Foundations in algorithms, languages and application development.</p></div>
+<div class="job rv now"><span class="when mono">Jun 2024 - Now</span><h3>Software Engineer (XR &amp; AI) · <em>RRD Go Creative</em> <span class="now">NOW</span></h3><p>Solution Architect and Team Lead. Industrial training VR, multiplayer VR shopping, trading-card AR, Porsche AI salesman, voice agents and full-duplex conversations on open-source models. Code-gen workflows with Cursor and Claude Code.</p></div>
+<div class="job rv"><span class="when mono">Dec 2023 - May 2024</span><h3>Unity 3D Developer (XR &amp; AI) · <em>Byfar Studios</em></h3><p>Crafted immersive experiences and AI programming in dynamic game development.</p></div>
+<div class="job rv"><span class="when mono">Feb - Nov 2023</span><h3>Junior Unity 3D Developer · <em>XR Labs</em></h3><p>Interactive experiences and enterprise VR applications.</p></div>
+<div class="job rv"><span class="when mono">May 2021 - Jan 2023</span><h3>Software Developer (ML &amp; NLP) · <em>BUDDI AI</em></h3><p>Spring MVC, Java and JavaScript, then healthcare problems with ML and NLP on a Java backend.</p></div>
+<div class="job rv"><span class="when mono">Dec 2020 - Jul 2021</span><h3>Software Developer · <em>Voussoir Technologies</em></h3><p>Foundations in algorithms, languages and application development.</p></div>
 </div></section>
 
-<section id="skills"><span class="tag mono">// 02 TECH STACK</span><h2 class="rv">Core Competencies</h2><p class="sub rv">Hover the chips. The 3D core in the background reacts to the section you are in.</p>
+<section id="skills"><span class="tag mono">// 02 TECH STACK</span><h2 class="rv">Core Competencies</h2><p class="sub rv">Hover the chips. The stack is grouped the way I actually ship work.</p>
 <div class="skills" id="sk"></div></section>
 
 <section id="work"><span class="tag mono">// 03 SELECTED WORK</span><h2 class="rv">Projects</h2><p class="sub rv">Visuals are generated procedurally from each project's concept. Move your mouse over a card.</p>
@@ -180,7 +185,7 @@ body.gate-on .name .l{animation-play-state:paused}
 <div class="grid" id="gr"></div></section>
 
 <section id="contact" class="contact"><span class="tag mono">// 04 TRANSMISSION</span><div class="big rv">Ready to process your ideas into reality.</div>
-<div class="links2 rv"><a class="btn p" href="mailto:anburaja920@gmail.com">anburaja920@gmail.com</a><a class="btn" target="_blank" rel="noopener" href="https://github.com/anbu06">GitHub</a><a class="btn" target="_blank" rel="noopener" href="https://www.linkedin.com/in/anbu-raja-377946146/">LinkedIn</a></div></section>
+<div class="links2 rv"><a class="btn p" href="mailto:anburaja920@gmail.com">anburaja920@gmail.com</a><a class="btn" target="_blank" rel="noopener" href="https://github.com/Anbusport07">GitHub</a><a class="btn" target="_blank" rel="noopener" href="https://www.linkedin.com/in/anbu-raja-377946146/">LinkedIn</a></div></section>
 </main>
 <footer class="mono">© 2026 Anbu Raja B · Chennai, India</footer>
 
@@ -200,8 +205,8 @@ const roles=['XR / VR / AR Developer','AI Solutions Architect','Unity 3D Enginee
 // counters
 function counters(){$$('.cnt').forEach(e=>{const n=+e.dataset.n;let v=0;const s=setInterval(()=>{v++;e.textContent=v+(n>1?'+':'');if(v>=n)clearInterval(s)},900/n)})}
 // data
-const skills=[['AI & ML',['LLMs / Llama2','OpenAI / Langchain','Computer Vision','NLP','Voice Agents (Bark AI)','Inference Engines']],['XR & 3D',['Unity3D','Unreal Engine','WebGL / Three.js','Blender / Cinema4D','IFC.js','Resolume (OSC)']],['Languages & Web',['Python','C# / C++ / C','Java (Spring Boot)','JavaScript / Vue.js','PHP / HTML / CSS']],['Tools & Architecture',['Cursor','Claude Code','Solution Architecture','VS Code / Visual Studio','Android Studio']],['Databases',['SQL / MSSQL','MongoDB','Apache Solr']]];
-$('#sk').innerHTML=skills.map(s=>`<div class="sk rv"><h3 class="mono">${s[0]}</h3>${s[1].map(c=>`<span class="chip">${c}</span>`).join('')}</div>`).join('');
+const skills=[['AI, ML & Agents',[['LLMs & Frameworks',['Ollama','vLLM','Langchain','Langgraph']],['Applied AI',['Voice Agents (Bark AI)','Virtual Assistants','NLP','Computer Vision']]]],['XR, 3D & Spatial Computing',[['Real-time Engines',['Unity3D','Unreal Engine']],['Asset Creation & Modeling',['Blender']],['Media & Show Control',['Resolume (OSC)']]]],['Architecture & Development Tools',[['System Design',['Solution Architecture','Team leadership']],['AI-Assisted Engineering',['Cursor','Claude Code','Codex']],['IDEs & Environments',['VS Code / Visual Studio','Android Studio']]]],['Programming & Web Development',[['Core Languages',['C# / C++ / C','Python','Java (Spring Boot)','PHP']],['Web Programming',['JavaScript','TypeScript']],['Web Frameworks',['Vue','React','Next.js']],['Web 3D & AR',['Three.js','Babylon.js','AR.js','MindAR']],['Markup & Styling',['HTML / CSS']]]],['Databases & Search',[['Databases',['SQL / MSSQL','PostgreSQL','MongoDB']],['Search Engines',['Apache Solr']]]]];
+$('#sk').innerHTML=skills.map(s=>`<div class="sk rv"><h3 class="mono">${s[0]}</h3>${s[1].map(g=>`<div class="g"><b>${g[0]}</b>${g[1].map(c=>`<span class="chip">${c}</span>`).join('')}</div>`).join('')}</div>`).join('');
 const proj=[
 ['ai','orbit','Porsche Virtual Salesman','AI agent for a Porsche showroom using LLMs, inference engines and real-time speech for full-duplex customer conversations.',['LLM','Voice','Real-time']],
 ['xr','grid','Multiplayer VR Commerce','ncountR VR shopping, SWB VR training and vending-machine simulations built for shared immersive retail.',['Unity','VR','Multiplayer']],
@@ -233,9 +238,9 @@ let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;addEventListener('mousemove',e=
 (function cur(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;$('#cr').style.transform=`translate(${rx}px,${ry}px)`;requestAnimationFrame(cur)})();
 document.addEventListener('mouseover',e=>$('#cr').classList.toggle('h',!!e.target.closest('a,button,.card,.chip,.kbd')));
 // scroll progress + timeline
-let sp=0;function onScroll(){const m=document.documentElement.scrollHeight-innerHeight;sp=m>0?scrollY/m:0;$('#prog').style.width=sp*100+'%';const t=$('#tl').getBoundingClientRect();$('#fill').style.height=Math.max(0,Math.min(t.height,innerHeight*.6-t.top))+'px'}addEventListener('scroll',onScroll,{passive:true});onScroll();
+let sp=0;function onScroll(){const m=document.documentElement.scrollHeight-innerHeight;sp=m>0?scrollY/m:0;$('#prog').style.width=sp*100+'%';const t=$('#tl').getBoundingClientRect(),jobs=$$('#tl .job');let h=0;if(jobs[0]){const d=jobs[0].getBoundingClientRect();h=d.top-t.top+37}jobs.forEach(j=>{const r=j.getBoundingClientRect();if(r.top<innerHeight*.55)h=r.top-t.top+37});$('#fill').style.height=Math.max(0,Math.min(t.height,h))+'px'}addEventListener('scroll',onScroll,{passive:true});onScroll();
 // palette
-const cmds=[['Go to Experience','#exp'],['Go to Skills','#skills'],['Go to Projects','#work'],['Filter: AI projects',()=>{sc('#work');$('.f[data-c=ai]').click()}],['Filter: XR projects',()=>{sc('#work');$('.f[data-c=xr]').click()}],['Contact: Email Anbu','mailto:anburaja920@gmail.com'],['Open GitHub','https://github.com/anbu06'],['Open LinkedIn','https://www.linkedin.com/in/anbu-raja-377946146/'],['Back to top','#top']];let sel=0,list=cmds;
+const cmds=[['Go to Experience','#exp'],['Go to Skills','#skills'],['Go to Projects','#work'],['Filter: AI projects',()=>{sc('#work');$('.f[data-c=ai]').click()}],['Filter: XR projects',()=>{sc('#work');$('.f[data-c=xr]').click()}],['Contact: Email Anbu','mailto:anburaja920@gmail.com'],['Open GitHub','https://github.com/Anbusport07'],['Open LinkedIn','https://www.linkedin.com/in/anbu-raja-377946146/'],['Back to top','#top']];let sel=0,list=cmds;
 function rp(){$('#pl').innerHTML=list.map((c,i)=>`<li class="${i==sel?'s':''}" data-i="${i}">&gt; ${c[0]}</li>`).join('')}
 function go(c){$('#pal').classList.remove('on');if(typeof c[1]=='function')c[1]();else if(c[1][0]=='#')sc(c[1]);else window.open(c[1],c[1].startsWith('mailto')?'_self':'_blank')}
 function tp(){if(document.body.classList.contains('gate-on'))return;const o=$('#pal').classList.toggle('on');if(o){$('#pi').value='';list=cmds;sel=0;rp();$('#pi').focus()}}
@@ -246,17 +251,16 @@ addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=='
 window.__bootWalkthrough=function(){if(window.__bootedGL||typeof THREE=='undefined')return;window.__bootedGL=1;
 (function(){const cv=$('#gl'),R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight);
 const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,200);C.position.z=8;
-const N=innerWidth<768?900:2200,pos=new Float32Array(N*3);for(let i=0;i<N*3;i++)pos[i]=(Math.random()-.5)*60;
-const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));const pm=new THREE.PointsMaterial({size:.05,color:0x00f0ff,transparent:true,opacity:.8,blending:THREE.AdditiveBlending});const pts=new THREE.Points(g,pm);S.add(pts);
-const core=new THREE.Mesh(new THREE.TorusKnotGeometry(1.6,.45,160,20),new THREE.MeshBasicMaterial({color:0xb14cff,wireframe:true,transparent:true,opacity:.35}));core.position.set(3.2,0,0);S.add(core);
-const ring=new THREE.Mesh(new THREE.TorusGeometry(2.8,.01,8,120),new THREE.MeshBasicMaterial({color:0x00f0ff}));ring.position.copy(core.position);S.add(ring);
-const cols=[[0x00f0ff,0xb14cff],[0xff2e93,0x00f0ff],[0x00f0ff,0xff2e93],[0xb14cff,0x00f0ff]],ids=['top','exp','skills','work'];
-let tx=0,ty=0,cur=0;addEventListener('mousemove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
-const cc=new THREE.Color(),tc=new THREE.Color();
-function an(t){requestAnimationFrame(an);t*=.001;core.rotation.x=t*.25+ty;core.rotation.y=t*.3+tx*2;ring.rotation.x=t*.4;ring.rotation.y=t*.2;
-const ts=1+Math.sin(t*2)*.04;core.scale.setScalar(ts*(1+sp*.6));core.position.x=3.2-sp*5.5+Math.sin(sp*Math.PI*3)*2.5;core.position.y=-sp*3;ring.position.copy(core.position);
-pts.rotation.y=t*.02+sp*2;pts.rotation.x=sp*1.2;C.position.z=8-sp*5;C.position.x+=(tx*1.5-C.position.x)*.04;C.position.y+=(-ty*1.5-C.position.y)*.04;C.lookAt(0,-sp*2,0);
-let k=0;ids.forEach((d,i)=>{const e=document.getElementById(d);if(e&&e.getBoundingClientRect().top<innerHeight*.5)k=i});tc.setHex(cols[k][0]);pm.color.lerp(tc,.04);tc.setHex(cols[k][1]);core.material.color.lerp(tc,.04);
+const N=innerWidth<768?700:1600,pos=new Float32Array(N*3);for(let i=0;i<N*3;i++)pos[i]=(Math.random()-.5)*70;
+const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));const pm=new THREE.PointsMaterial({size:.04,color:0x00f0ff,transparent:true,opacity:.45,blending:THREE.AdditiveBlending,depthWrite:false});const pts=new THREE.Points(g,pm);S.add(pts);
+const core=new THREE.Mesh(new THREE.IcosahedronGeometry(2.15,1),new THREE.MeshBasicMaterial({color:0xb14cff,wireframe:true,transparent:true,opacity:.18}));core.position.set(4.4,.35,-1.2);S.add(core);
+const ring=new THREE.Mesh(new THREE.TorusGeometry(3.05,.008,8,80),new THREE.MeshBasicMaterial({color:0x00f0ff,transparent:true,opacity:.35}));ring.position.copy(core.position);S.add(ring);
+let tx=0,ty=0;addEventListener('mousemove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
+function an(t){requestAnimationFrame(an);t*=.001;core.rotation.x=t*.1+ty*.2;core.rotation.y=t*.14+tx*.5;ring.rotation.x=t*.08;ring.rotation.y=t*.12;
+const hero=$('#top'),hb=hero?hero.getBoundingClientRect().bottom:0,vis=Math.max(0,Math.min(1,(hb-90)/innerHeight));
+core.material.opacity=.05+vis*.16;ring.material.opacity=.08+vis*.28;pm.opacity=.22+vis*.2;
+core.position.set(4.4+tx*.25,.35-ty*.2-sp*.35,-1.2);ring.position.copy(core.position);
+pts.rotation.y=t*.008;C.position.z=8-sp*.7;C.position.x+=(tx*.35-C.position.x)*.03;C.position.y+=(-ty*.25-C.position.y)*.03;C.lookAt(0,0,0);
 if(window.__bt)window.__bt();R.render(S,C)}window.__3={S,C};requestAnimationFrame(an);
 addEventListener('resize',()=>{C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix();R.setSize(innerWidth,innerHeight)})})();
 if(typeof window.__startBattle==='function')window.__startBattle()};
@@ -266,7 +270,7 @@ if(typeof window.__startBattle==='function')window.__startBattle()};
 const q=s=>document.querySelector(s);
 /* ---------- eased auto-scroll ---------- */
 const ez=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;let raf=0;
-window.sc=function(h){const el=q(h);if(!el)return;const y0=scrollY,y1=Math.max(0,el.getBoundingClientRect().top+y0-(h=='#top'?0:64)),d=y1-y0,du=Math.min(1700,650+Math.abs(d)*.3),t0=performance.now();cancelAnimationFrame(raf);(function f(n){const p=Math.min(1,(n-t0)/du);scrollTo(0,y0+d*ez(p));if(p<1)raf=requestAnimationFrame(f)})(t0)};
+window.sc=function(h){const el=q(h);if(!el)return;const y0=scrollY,y1=Math.max(0,el.getBoundingClientRect().top+y0-(h=='#top'?0:64)),d=y1-y0,du=Math.min(720,420+Math.abs(d)*.16),t0=performance.now();cancelAnimationFrame(raf);(function f(n){const p=Math.min(1,(n-t0)/du);scrollTo(0,y0+d*ez(p));if(p<1)raf=requestAnimationFrame(f)})(t0)};
 ['wheel','touchstart'].forEach(ev=>addEventListener(ev,()=>cancelAnimationFrame(raf),{passive:true}));
 document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;e.preventDefault();sc(a.getAttribute('href'))});
 const ids=['top','exp','skills','work','contact'],ds=[...document.querySelectorAll('#dots a')];
@@ -315,7 +319,7 @@ const m=new THREE.PointsMaterial({size:.16,color:c,transparent:true,blending:THR
 const rg=new THREE.Mesh(new THREE.RingGeometry(.2,.26,40),new THREE.MeshBasicMaterial({color:c,transparent:true,side:2,blending:THREE.AdditiveBlending}));rg.position.copy(p);S.add(rg);
 FX.push({pts,g,pa,vs,m,rg,life:1})}
 function nearest(){const[w]=vw();let b=null,d=1e9;sa.forEach(s=>{if(!s.alive)return;const dx=s.g.position.x-P.position.x;if(dx>-.5&&Math.abs(s.g.position.x)<w&&dx<d){d=dx;b=s}});return b}
-function pfire(){const s=nearest();let dx=1,dy=0;if(s){dx=s.g.position.x-P.position.x;dy=s.g.position.y-P.position.y;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l}const o=P.position.clone();o.x+=.7;shoot(o,dx*15,dy*15,0)}
+function pfire(){const a=P.rotation.z,o=P.position.clone();o.x+=Math.cos(a)*.7;o.y+=Math.sin(a)*.7;shoot(o,Math.cos(a)*15,Math.sin(a)*15,0)}
 /* per-frame update, called from the main render loop */
 window.__bt=function(){const now=performance.now(),dt=Math.max(.001,Math.min(.05,(now-last)/1e3));last=now;const t=now/1e3;
 P.visible=on;tr.visible=on;sa.forEach(s=>s.g.visible=on&&s.alive);if(!on)return;
@@ -324,12 +328,13 @@ if(idle){tx=Math.sin(t*.6)*w*.55;ty=Math.cos(t*.9)*h*.45}
 else{const v=new THREE.Vector3(ax,ay,.5).unproject(C).sub(C.position).normalize(),k=-C.position.z/v.z;tx=C.position.x+v.x*k;ty=C.position.y+v.y*k}
 tx=cl(tx,-w*.9,w*.9);ty=cl(ty,-h*.85,h*.85);
 const ox=P.position.x,oy=P.position.y,f=Math.min(1,dt*5);P.position.x+=(tx-ox)*f;P.position.y+=(ty-oy)*f;
-const vy=(P.position.y-oy)/dt;
-P.rotation.z+=(cl(vy*.18,-.6,.6)-P.rotation.z)*.15;pb.rotation.x+=(cl(-vy*.12,-.8,.8)+Math.sin(t*2)*.05-pb.rotation.x)*.15;
+let aim=Math.atan2(ty-P.position.y,tx-P.position.x),dz=aim-P.rotation.z;while(dz>Math.PI)dz-=Math.PI*2;while(dz<-Math.PI)dz+=Math.PI*2;
+P.rotation.z+=dz*Math.min(1,dt*7);pb.rotation.x+=(cl(-(ty-oy)*.1,-.45,.45)+Math.sin(t*2)*.04-pb.rotation.x)*.12;
 flame.scale.set(1,.7+Math.random()*.8,1);eng.scale.setScalar(.8+Math.random()*.4);
 inv-=dt;P.visible=inv>0?Math.floor(t*12)%2==0:true;
+const cs=Math.cos(P.rotation.z),sn=Math.sin(P.rotation.z);
 for(let i=TN-1;i>0;i--){tpA[i*3]=tpA[(i-1)*3];tpA[i*3+1]=tpA[(i-1)*3+1];tpA[i*3+2]=tpA[(i-1)*3+2]}
-tpA[0]=P.position.x-.6;tpA[1]=P.position.y+(Math.random()-.5)*.05;tpA[2]=0;
+tpA[0]=P.position.x-cs*.65;tpA[1]=P.position.y-sn*.65+(Math.random()-.5)*.04;tpA[2]=0;
 for(let i=0;i<TN;i++){const c=Math.pow(1-i/TN,2);tcA[i*3]=0;tcA[i*3+1]=.9*c;tcA[i*3+2]=c}
 tg.attributes.position.needsUpdate=true;tg.attributes.color.needsUpdate=true;
 pcd-=dt;if((hold||(idle&&nearest()))&&pcd<=0){pfire();pcd=hold?.14:.5}
