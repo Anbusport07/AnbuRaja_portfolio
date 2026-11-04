@@ -242,8 +242,9 @@ function tp(){if(document.body.classList.contains('gate-on'))return;const o=$('#
 $('#kb').onclick=tp;$('#pal').onclick=e=>{if(e.target.id=='pal')tp()};$('#pl').onclick=e=>{const l=e.target.closest('li');if(l)go(list[+l.dataset.i])};
 $('#pi').oninput=e=>{const q=e.target.value.toLowerCase();list=cmds.filter(c=>c[0].toLowerCase().includes(q));sel=0;rp()};
 addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=='k'){e.preventDefault();tp()}else if($('#pal').classList.contains('on')){if(e.key=='Escape')tp();if(e.key=='ArrowDown'){sel=Math.min(sel+1,list.length-1);rp()}if(e.key=='ArrowUp'){sel=Math.max(sel-1,0);rp()}if(e.key=='Enter'&&list[sel])go(list[sel])}});
-// THREE scene
-(function(){if(typeof THREE=='undefined')return;const cv=$('#gl'),R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight);
+// THREE scene — started after the particle gate so Edge/Windows keep one WebGL context
+window.__bootWalkthrough=function(){if(window.__bootedGL||typeof THREE=='undefined')return;window.__bootedGL=1;
+(function(){const cv=$('#gl'),R=new THREE.WebGLRenderer({canvas:cv,alpha:true,antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(innerWidth,innerHeight);
 const S=new THREE.Scene(),C=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,200);C.position.z=8;
 const N=innerWidth<768?900:2200,pos=new Float32Array(N*3);for(let i=0;i<N*3;i++)pos[i]=(Math.random()-.5)*60;
 const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));const pm=new THREE.PointsMaterial({size:.05,color:0x00f0ff,transparent:true,opacity:.8,blending:THREE.AdditiveBlending});const pts=new THREE.Points(g,pm);S.add(pts);
@@ -258,6 +259,7 @@ pts.rotation.y=t*.02+sp*2;pts.rotation.x=sp*1.2;C.position.z=8-sp*5;C.position.x
 let k=0;ids.forEach((d,i)=>{const e=document.getElementById(d);if(e&&e.getBoundingClientRect().top<innerHeight*.5)k=i});tc.setHex(cols[k][0]);pm.color.lerp(tc,.04);tc.setHex(cols[k][1]);core.material.color.lerp(tc,.04);
 if(window.__bt)window.__bt();R.render(S,C)}window.__3={S,C};requestAnimationFrame(an);
 addEventListener('resize',()=>{C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix();R.setSize(innerWidth,innerHeight)})})();
+if(typeof window.__startBattle==='function')window.__startBattle()};
 </script>
 <script>
 (function(){
@@ -272,6 +274,7 @@ function act(){let k=0;ids.forEach((d,i)=>{if(document.getElementById(d).getBoun
 addEventListener('scroll',act,{passive:true});act();
 
 /* ---------- interactive space battle ---------- */
+window.__startBattle=function(){
 const T=window.__3;if(!T||typeof THREE=='undefined')return;const S=T.S,C=T.C;
 let on=!matchMedia('(prefers-reduced-motion:reduce)').matches,score=0,shield=100,inv=0,last=performance.now(),lastIn=-1e9,hold=0,pcd=0,ax=.3,ay=.1;
 const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -351,6 +354,8 @@ addEventListener('keydown',e=>{if(e.code=='KeyF'&&on&&!/INPUT|BUTTON/.test(docum
 const bo=q('#bto');bo.textContent='BATTLE '+(on?'ON':'OFF');
 bo.onclick=()=>{on=!on;bo.textContent='BATTLE '+(on?'ON':'OFF');if(!on){Ls.forEach(l=>S.remove(l.m));Ls.length=0}else sa.forEach(s=>spawn(s,1))};
 hud();
+};
+if(!document.body.classList.contains('gate-on'))window.__bootWalkthrough();
 })();
 </script>
 <script>
@@ -367,14 +372,13 @@ function enter(){if(entered)return;entered=true;
 if(fx)fx.burst();
 gate.classList.add('out');body.classList.remove('gate-on');chrome.forEach(el=>el.removeAttribute('inert'));scrollTo(0,0);
 document.dispatchEvent(new Event('gate-enter'));
-setTimeout(()=>{if(fx)fx.dispose();gate.remove()},1000)}
+setTimeout(()=>{if(fx)fx.dispose();gate.remove();if(window.__bootWalkthrough)window.__bootWalkthrough()},1000)}
 btn.addEventListener('click',enter);
 addEventListener('keydown',e=>{if(entered||!body.classList.contains('gate-on'))return;if(e.key=='Enter'&&!e.ctrlKey&&!e.metaKey&&!e.target.closest('input,textarea')){e.preventDefault();enter()}});
 const showUI=()=>gate.classList.add('ready');
 const fallback=()=>{gate.classList.add('static');onBoot(showUI)};
 if(typeof THREE=='undefined'){fallback();return}
-const calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
-if(calm){fallback();return}
+const calm=false;
 
 const mobile=matchMedia('(pointer:coarse)').matches||innerWidth<720;
 const layout=()=>innerWidth/innerHeight<.8?['Anbu','Raja']:['Anbu Raja'];
@@ -556,7 +560,7 @@ raf=requestAnimationFrame(frame);
 fx={burst(){if(!calm)burstT=.18},
 dispose(){cancelAnimationFrame(raf);fx=null;sim.dispose();geo.dispose();mat.dispose();
 if(comp){bloom.dispose();comp.renderTarget1.dispose();comp.renderTarget2.dispose()}
-R.dispose();R.forceContextLoss()}};
+R.dispose()}};
 if(entered)fx.dispose()}
 init().catch(e=>{console.warn('gate',e);fallback()});
 })();
